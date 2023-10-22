@@ -1,6 +1,9 @@
 package person
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"os"
 	"practice/api-go-file/domain"
 )
@@ -23,7 +26,7 @@ func NewService(dbFilePath string) (Service, error) {
 
 			return Service{
 				dbFilePath: dbFilePath,
-				people: domain.People{},
+				people:     domain.People{},
 			}, nil
 		}
 	}
@@ -31,7 +34,7 @@ func NewService(dbFilePath string) (Service, error) {
 	// se existir crio
 	jsonFile, err := os.Open(dbFilePath)
 	if err != nil {
-		return Service {}, fmt.Error("Error trying to open file that contains all people: %s", err.Error())
+		return Service{}, fmt.Errorf("Error trying to open file that contains all people: %s", err.Error())
 	}
 
 	jsonFileContentByte, err := ioutil.ReadAll(jsonFile)
@@ -44,7 +47,7 @@ func NewService(dbFilePath string) (Service, error) {
 
 	return Service{
 		dbFilePath: dbFilePath,
-		people: allPeople,
+		people:     allPeople,
 	}, nil
 }
 
@@ -54,10 +57,10 @@ func createEmptyFile(dbFilePath string) error {
 	}
 	peopleJSON, err := json.Marshal(people)
 	if err != nil {
-		return fmt.Errorf("Error trying to encode people as JSON?: " %s, err.Error())
+		return fmt.Errorf("Error trying to encode people as JSON?: %s", err.Error())
 	}
 	err = ioutil.WriteFile(dbFilePath, peopleJSON, 0755)
-	if err != {
+	if err != nil {
 		return fmt.Errorf("Error trying to write to file. Error: %s", err.Error())
 	}
 	return nil
@@ -65,7 +68,7 @@ func createEmptyFile(dbFilePath string) error {
 
 func (s Service) Create(person domain.Person) error {
 	// verfify if exist
-	if s.exist(person){
+	if s.exist(person) {
 		return fmt.Error("Error trying to create person. There is a person with this ID already registered")
 	}
 	// add
@@ -80,7 +83,7 @@ func (s Service) Create(person domain.Person) error {
 	return nil
 }
 
-func (s Service) exists(person domain.Person) bool {
+func (s *Service) exists(person domain.Person) bool {
 	for _, currentPerson := range s.people.People {
 		if currentPerson.ID == person.ID {
 			return true
