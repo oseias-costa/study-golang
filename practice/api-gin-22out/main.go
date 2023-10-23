@@ -25,6 +25,7 @@ func main() {
 	r := gin.Default()
 
 	r.GET("/albums", getAlbums)
+	r.GET("/albums/:id", getAlbumByID)
 	r.POST("/albums", addAlbum)
 	r.Run("localhost:8080")
 }
@@ -43,4 +44,30 @@ func addAlbum(c *gin.Context) {
 
 	albums = append(albums, newAlbum)
 	c.IndentedJSON(http.StatusOK, newAlbum)
+}
+
+func getAlbumByID(c *gin.Context) {
+	id := c.Param("id")
+
+	for _, a := range albums {
+		if a.ID == id {
+			c.IndentedJSON(http.StatusOK, a)
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+}
+
+func updateAlbum(c *gin.Context) {
+	id := c.Param("id")
+
+	for _, a := range albums {
+		if a.ID == id {
+			// chage here
+			c.IndentedJSON(http.StatusOK, a)
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+
 }
