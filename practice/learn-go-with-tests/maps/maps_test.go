@@ -1,6 +1,9 @@
 package maps
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestSearch(t *testing.T) {
 	t.Run("word Search", func(t *testing.T) {
@@ -14,6 +17,7 @@ func TestSearch(t *testing.T) {
 	t.Run("unknown word", func(t *testing.T) {
 		dictionary := Dictionary{"test": "this is a test"}
 		result := Search(dictionary, "other")
+		fmt.Printf("result %s", result)
 	})
 }
 func compareStrings(t *testing.T, result string, expect string) {
